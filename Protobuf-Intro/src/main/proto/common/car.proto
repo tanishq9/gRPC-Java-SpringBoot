@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package common; // this is package name for proto files
+
+option java_multiple_files = true;
+option java_package = "com.example.protobuf.models"; // this is the package name for generated java files
+
+message Car {
+  string make = 1;
+  int32 year = 2;
+  Style style = 3;
+}
+
+enum Style {
+  UNKNOWN = 0; // first enum value must be 0, it is the default
+  SEDAN = 1;
+  COUPE = 2;
+  SUV = 3;
+}

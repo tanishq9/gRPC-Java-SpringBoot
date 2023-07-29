@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+import "common/car.proto";
+import "google/protobuf/wrappers.proto";
+
+// Instead of having 1 file, it would be split into multiple files
+option java_multiple_files = true;
+option java_package = "com.example.protobuf.models";
+
+message Person {
+  string name = 1; // 1 is tag, it can be any number
+  int32 age = 2;
+  repeated common.Car cars = 3;
+  common.Car first_car = 4;
+}
+
+message PersonAlter {
+  string name = 1;
+  google.protobuf.Int32Value age = 2;
+  repeated common.Car cars = 3;
+  common.Car first_car = 4;
+}
