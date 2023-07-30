@@ -184,6 +184,25 @@ Context context = Context.current().withValue(
 return Contexts.interceptCall(context, serverCall, metadata, serverCallHandler);
 ```
 
+- A question about Context:
+
+What if a thread is executing multiple requests simultaneously then wouldn't the Context created/updated, by this thread, corresponding to one request be visible or overriden when executing other request simultaneously? Would a thread process some other request before finishing the first request assigned to it because if Context is stored in ThreadLocal then this data, stored by a thread, would be visible to other requests as well? Programatically I am assuming it to be like: ThreadLocal<Context>
+
+Short answer: Threads will see context only during the execution time.
+
+Long Answer: The non-blocking frameworks have limited threads. So there is a ThreadLocal<Context> as well. ThreadLocal is for the event-loop threads. Context is about the requests. The idea here is - context will be continuously attached and detached during the execution.  When we attach context (to the threadlocal), the event loop thread will see the context and get the info for the execution. as soon as it is executed, the context will be removed and the next one will be attached. When we say "once it is executed", it is not whole request processing is completed. While it is waiting for IO, the context will be removed to process next request.
+
+```
+public void run(Runnable r) {
+    Context previous = this.attach();
+    try {
+        r.run();
+    } finally {
+        this.detach(previous);
+    }
+}
+```
+
 - Miscellaneous
   - About ThreadLocal -
     - The TheadLocal construct allows us to store data that will be accessible only by a specific thread.
